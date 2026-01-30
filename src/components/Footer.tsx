@@ -33,9 +33,9 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-lg mb-4">Contact Us</h4>
             <ul className="space-y-3">
               <li>
-                <a href="tel:+2348000000000" className="flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href="tel:+2349074743062" className="flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   <Phone className="h-4 w-4" />
-                  +234 800 000 0000
+                  +234 907 474 3062
                 </a>
               </li>
               <li>
@@ -46,7 +46,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 text-primary-foreground/80">
                 <MapPin className="h-4 w-4 mt-1 shrink-0" />
-                <span>Abuja, Nigeria</span>
+                <span>Abuja • Lagos • Port Harcourt • Delta</span>
               </li>
             </ul>
           </div>
