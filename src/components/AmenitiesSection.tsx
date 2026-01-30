@@ -73,13 +73,14 @@ const AmenitiesSection = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  Our apartments are strategically located in Abuja's most prestigious neighborhoods, 
-                  offering easy access to business districts, shopping centers, and entertainment venues.
+                  Our apartments are strategically located across Nigeria's major cities—Abuja, Lagos, 
+                  Port Harcourt, and Delta—offering easy access to business districts, shopping centers, 
+                  and entertainment venues.
                 </p>
                 <div className="space-y-2 text-sm">
                   <p className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
-                    10 mins to Central Business District
+                    Prime locations in 4 major cities
                   </p>
                   <p className="flex items-center gap-2">
                     <Car className="h-4 w-4 text-primary" />

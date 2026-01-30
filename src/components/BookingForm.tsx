@@ -67,7 +67,7 @@ const BookingForm = () => {
                   Submit Another Request
                 </Button>
                 <Button variant="hero" asChild>
-                  <a href="https://wa.me/2348000000000" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/2349074743062" target="_blank" rel="noopener noreferrer">
                     <Phone className="h-4 w-4" />
                     Chat on WhatsApp
                   </a>
@@ -228,11 +228,11 @@ const BookingForm = () => {
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <a
-                      href="tel:+2348000000000"
+                      href="tel:+2349074743062"
                       className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
                     >
                       <Phone className="h-4 w-4" />
-                      +234 800 000 0000
+                      +234 907 474 3062
                     </a>
                     <a
                       href="mailto:bookings@mypropout.com"
