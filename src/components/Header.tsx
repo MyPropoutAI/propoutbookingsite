@@ -1,7 +1,10 @@
 import { MapPin, Phone, Mail, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useBookingStore } from "@/store/useBookingStore";
 
 const Header = () => {
+  const { openBooking } = useBookingStore();
+
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -12,10 +15,12 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-full hero-gradient flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">P</span>
-            </div>
-            <span className="text-xl font-display font-bold text-foreground">PropOut</span>
+            <img 
+              src="/logo.png" 
+              alt="PropOut Logo" 
+              className="h-10 w-10 object-contain  bg-white" 
+            />
+            
           </div>
 
           {/* Navigation */}
@@ -33,7 +38,7 @@ const Header = () => {
               Amenities
             </button>
             <button
-              onClick={() => scrollToSection("booking")}
+              onClick={() => openBooking()}
               className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               Book Now
@@ -54,7 +59,7 @@ const Header = () => {
             <Button
               variant="hero"
               size="sm"
-              onClick={() => scrollToSection("booking")}
+              onClick={() => openBooking()}
             >
               Book Preview
             </Button>

@@ -8,9 +8,11 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                <span className="font-bold text-lg">P</span>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="PropOut Logo" 
+                className="h-10 w-10 object-contain rounded-full bg-white" 
+              />
               <span className="text-xl font-display font-bold">PropOut</span>
             </div>
             <p className="text-primary-foreground/80 mb-4">

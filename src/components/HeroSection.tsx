@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Heart, Star, MapPin } from "lucide-react";
 import heroImage from "@/assets/hero-apartment.jpg";
+import { useBookingStore } from "@/store/useBookingStore";
 
 const HeroSection = () => {
+  const { openBooking } = useBookingStore();
+
   const scrollToApartments = () => {
     document.getElementById("apartments")?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToBooking = () => {
-    document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -56,7 +55,7 @@ const HeroSection = () => {
 
           {/* CTAs */}
           <div className="flex flex-wrap gap-4">
-            <Button variant="promo" size="xl" onClick={scrollToBooking}>
+            <Button variant="promo" size="xl" onClick={() => openBooking()}>
               <Heart className="h-5 w-5" />
               Book Now - 50% Off
             </Button>

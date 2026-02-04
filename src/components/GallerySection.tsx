@@ -1,129 +1,97 @@
-import { Bed, Users, Bath, Wifi, Tv, AirVent, Heart } from "lucide-react";
+import { Bed, Users, Bath, Wifi, Tv, AirVent, Heart, Video, Image, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { getProperties, Property } from "@/services/api";
+import { useBookingStore } from "@/store/useBookingStore";
 
-import apartment1 from "@/assets/apartment-1.jpg";
-import apartment2 from "@/assets/apartment-2.jpg";
-import apartment3 from "@/assets/apartment-3.jpg";
-
-interface Apartment {
-  id: number;
-  name: string;
-  image: string;
-  beds: number;
-  baths: number;
-  guests: number;
-  price: number;
-  originalPrice: number;
-  features: string[];
-  popular?: boolean;
-}
-
-const apartments: Apartment[] = [
-  {
-    id: 1,
-    name: "Luxury Studio Suite",
-    image: apartment1,
-    beds: 1,
-    baths: 1,
-    guests: 2,
-    price: 35000,
-    originalPrice: 70000,
-    features: ["King Bed", "City View", "Workspace"],
-  },
-  {
-    id: 2,
-    name: "Executive 2-Bedroom",
-    image: apartment2,
-    beds: 2,
-    baths: 2,
-    guests: 4,
-    price: 55000,
-    originalPrice: 110000,
-    features: ["Master Suite", "Dining Area", "Balcony"],
-    popular: true,
-  },
-  {
-    id: 3,
-    name: "Premium Penthouse",
-    image: apartment3,
-    beds: 3,
-    baths: 3,
-    guests: 6,
-    price: 85000,
-    originalPrice: 170000,
-    features: ["Panoramic View", "Living Room", "Kitchen"],
-  },
-];
-
-const ApartmentCard = ({ apartment }: { apartment: Apartment }) => {
-  const scrollToBooking = () => {
-    document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
-  };
+const ApartmentCard = ({ apartment }: { apartment: Property }) => {
+  const { openBooking } = useBookingStore();
+  
+  // Find the first image or video to display
+  const displayMedia = apartment.media && apartment.media.length > 0 ? apartment.media[0] : null;
 
   return (
-    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 elevated-card card-gradient">
-      {/* Image */}
-      <div className="relative overflow-hidden">
-        <img
-          src={apartment.image}
-          alt={apartment.name}
-          className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        {apartment.popular && (
-          <Badge className="absolute top-3 left-3 promo-gradient border-0">
-            <Heart className="h-3 w-3 mr-1" />
-            Popular Choice
-          </Badge>
+    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 elevated-card card-gradient flex flex-col h-full">
+      {/* Media */}
+      <div className="relative overflow-hidden h-56 bg-muted">
+        {displayMedia ? (
+          displayMedia.resourceType === 'video' ? (
+            <div className="w-full h-full flex items-center justify-center bg-black/10">
+              <video 
+                src={displayMedia.url} 
+                className="w-full h-full object-cover"
+                muted
+                loop
+                onMouseOver={(e) => e.currentTarget.play()}
+                onMouseOut={(e) => e.currentTarget.pause()}
+              />
+              <div className="absolute top-2 right-2 bg-black/50 p-1 rounded-full text-white">
+                <Video size={14} />
+              </div>
+            </div>
+          ) : (
+            <img
+              src={displayMedia.url}
+              alt={apartment.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          )
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            <Image size={32} />
+          </div>
         )}
-        <div className="absolute top-3 right-3 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-bold">
-          50% OFF
-        </div>
+        
+        {/* Status Badge */}
+        {apartment.status !== 'available' && (
+           <Badge className={`absolute top-3 left-3 border-0 ${
+             apartment.status === 'booked' ? 'bg-amber-500 hover:bg-amber-600' : 'bg-rose-500 hover:bg-rose-600'
+           }`}>
+             {apartment.status === 'booked' ? 'Booked' : 'Maintenance'}
+           </Badge>
+        )}
       </div>
 
       <CardHeader className="pb-2">
-        <h3 className="text-xl font-display font-semibold text-foreground">{apartment.name}</h3>
+        <h3 className="text-xl font-display font-semibold text-foreground truncate">{apartment.title}</h3>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
-            <Bed className="h-4 w-4" /> {apartment.beds} Bed{apartment.beds > 1 ? "s" : ""}
+            <Users className="h-4 w-4" /> {apartment.maxGuests} Guests
           </span>
-          <span className="flex items-center gap-1">
-            <Bath className="h-4 w-4" /> {apartment.baths} Bath{apartment.baths > 1 ? "s" : ""}
-          </span>
-          <span className="flex items-center gap-1">
-            <Users className="h-4 w-4" /> {apartment.guests} Guests
-          </span>
+          {/* We can map amenities if needed, but for now we show basic info */}
         </div>
       </CardHeader>
 
-      <CardContent className="pb-4">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {apartment.features.map((feature) => (
+      <CardContent className="pb-4 flex-grow">
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{apartment.description}</p>
+        
+        <div className="flex flex-wrap gap-2">
+          {apartment.amenities.slice(0, 3).map((feature) => (
             <Badge key={feature} variant="secondary" className="text-xs">
               {feature}
             </Badge>
           ))}
-        </div>
-        
-        {/* Quick amenities */}
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <Wifi className="h-4 w-4" />
-          <Tv className="h-4 w-4" />
-          <AirVent className="h-4 w-4" />
+          {apartment.amenities.length > 3 && (
+            <Badge variant="outline" className="text-xs">+{apartment.amenities.length - 3}</Badge>
+          )}
         </div>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between pt-4 border-t border-border">
+      <CardFooter className="flex items-center justify-between pt-4 border-t border-border mt-auto">
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-primary">₦{apartment.price.toLocaleString()}</span>
-            <span className="text-sm text-muted-foreground line-through">₦{apartment.originalPrice.toLocaleString()}</span>
+            <span className="text-2xl font-bold text-primary">₦{apartment.pricePerNight.toLocaleString()}</span>
           </div>
           <span className="text-sm text-muted-foreground">per night</span>
         </div>
-        <Button variant="hero" onClick={scrollToBooking}>
-          Book Now
+        <Button 
+          variant="hero" 
+          onClick={() => openBooking(apartment._id)}
+          disabled={apartment.status !== 'available'}
+        >
+          {apartment.status === 'available' ? 'Book Now' : 'Unavailable'}
         </Button>
       </CardFooter>
     </Card>
@@ -131,6 +99,32 @@ const ApartmentCard = ({ apartment }: { apartment: Apartment }) => {
 };
 
 const GallerySection = () => {
+  const { data: properties, isLoading, isError } = useQuery({
+    queryKey: ['properties'],
+    queryFn: () => getProperties(),
+  });
+
+  if (isLoading) {
+    return (
+      <section id="apartments" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4 text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+            <p className="mt-4 text-muted-foreground">Loading premium apartments...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section id="apartments" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4 text-center">
+            <p className="text-rose-500">Failed to load apartments. Please try again later.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="apartments" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -151,8 +145,8 @@ const GallerySection = () => {
 
         {/* Apartments Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {apartments.map((apartment) => (
-            <ApartmentCard key={apartment.id} apartment={apartment} />
+          {properties?.map((apartment) => (
+            <ApartmentCard key={apartment._id} apartment={apartment} />
           ))}
         </div>
       </div>
