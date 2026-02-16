@@ -20,7 +20,7 @@ export interface BookingData {
     fullName: string;
     email: string;
     phoneNumber: string;
-    preferredApartment: string; // This will be the Property ID
+    preferredApartment?: string; // This will be the Property ID
     checkInDate: string;
     checkOutDate: string;
     numberOfGuests: number;

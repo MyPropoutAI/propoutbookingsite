@@ -3,9 +3,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Phone, Mail, Send, Loader2, CheckCircle2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Calendar,
+  Phone,
+  Mail,
+  Send,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createBooking, getProperties, BookingData } from "@/services/api";
@@ -26,14 +45,17 @@ const BookingForm = () => {
 
   // Fetch properties for the dropdown
   const { data: properties } = useQuery({
-    queryKey: ['properties'],
+    queryKey: ["properties"],
     queryFn: () => getProperties(),
   });
 
   // Update selected apartment when selectedPropertyId changes
   useEffect(() => {
     if (selectedPropertyId) {
-      setFormData(prev => ({ ...prev, preferredApartment: selectedPropertyId }));
+      setFormData((prev) => ({
+        ...prev,
+        preferredApartment: selectedPropertyId,
+      }));
     }
   }, [selectedPropertyId]);
 
@@ -41,7 +63,8 @@ const BookingForm = () => {
     mutationFn: createBooking,
     onSuccess: () => {
       toast.success("Booking Request Sent!", {
-        description: "We'll contact you within 24 hours to confirm your booking.",
+        description:
+          "We'll contact you within 24 hours to confirm your booking.",
       });
       closeBooking();
       // Reset form
@@ -58,16 +81,25 @@ const BookingForm = () => {
     },
     onError: (error: any) => {
       toast.error("Booking Failed", {
-        description: error.response?.data?.message || "Something went wrong. Please try again.",
+        description:
+          error.response?.data?.message ||
+          "Something went wrong. Please try again.",
       });
-    }
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form
-    if (!formData.fullName || !formData.email || !formData.phoneNumber || !formData.preferredApartment || !formData.checkInDate || !formData.checkOutDate || !formData.numberOfGuests) {
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.phoneNumber ||
+      !formData.checkInDate ||
+      !formData.checkOutDate ||
+      !formData.numberOfGuests
+    ) {
       toast.error("Missing Fields", {
         description: "Please fill in all required fields marked with *",
       });
@@ -144,10 +176,12 @@ const BookingForm = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="apartment">Preferred Apartment *</Label>
-              <Select 
-                value={formData.preferredApartment} 
-                onValueChange={(value) => handleChange("preferredApartment", value)}
+              <Label htmlFor="apartment">Preferred Apartment (Optional)</Label>
+              <Select
+                value={formData.preferredApartment}
+                onValueChange={(value) =>
+                  handleChange("preferredApartment", value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select apartment" />
@@ -155,10 +189,15 @@ const BookingForm = () => {
                 <SelectContent>
                   {properties?.map((property) => (
                     <SelectItem key={property._id} value={property._id}>
-                      {property.title} - ₦{property.pricePerNight.toLocaleString()}/night
+                      {property.title} - ₦
+                      {property.pricePerNight.toLocaleString()}/night
                     </SelectItem>
                   ))}
-                  {!properties?.length && <SelectItem value="loading" disabled>Loading apartments...</SelectItem>}
+                  {!properties?.length && (
+                    <SelectItem value="loading" disabled>
+                      Loading apartments...
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -188,16 +227,18 @@ const BookingForm = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="numberOfGuests">Guests *</Label>
-              <Select 
-                value={formData.numberOfGuests} 
+              <Select
+                value={formData.numberOfGuests}
                 onValueChange={(value) => handleChange("numberOfGuests", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                    <SelectItem key={num} value={num.toString()}>{num} Guest{num > 1 ? 's' : ''}</SelectItem>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <SelectItem key={num} value={num.toString()}>
+                      {num} Guest{num > 1 ? "s" : ""}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -206,22 +247,26 @@ const BookingForm = () => {
 
           {/* Message */}
           <div className="space-y-2">
-            <Label htmlFor="additionalMessage">Additional Message (Optional)</Label>
+            <Label htmlFor="additionalMessage">
+              Additional Message (Optional)
+            </Label>
             <Textarea
               id="additionalMessage"
               placeholder="Any special requests or questions?"
               value={formData.additionalMessage}
-              onChange={(e) => handleChange("additionalMessage", e.target.value)}
+              onChange={(e) =>
+                handleChange("additionalMessage", e.target.value)
+              }
               rows={3}
             />
           </div>
 
           {/* Submit */}
           <div className="flex flex-col gap-4">
-            <Button 
-              type="submit" 
-              variant="promo" 
-              size="lg" 
+            <Button
+              type="submit"
+              variant="promo"
+              size="lg"
               className="w-full"
               disabled={mutation.isPending}
             >
@@ -237,9 +282,10 @@ const BookingForm = () => {
                 </>
               )}
             </Button>
-            
+
             <p className="text-xs text-center text-muted-foreground">
-              By submitting, you agree to our booking terms. We'll contact you to finalize payment.
+              By submitting, you agree to our booking terms. We'll contact you
+              to finalize payment.
             </p>
           </div>
         </form>
